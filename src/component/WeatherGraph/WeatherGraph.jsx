@@ -31,8 +31,8 @@ const WeatherGraph = ({ forecastData }) => {
     const chartData = getChartData();
 
     return (
-        <Box sx={{ minHeight: '50vh', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center',mt:2 ,mb:2 }}>
-            <Typography variant="h5" gutterBottom sx={{ width: { xs: "98%", sm: "98%", md: "80%" }, textAlign: 'start' }}>
+        <Box sx={{ minHeight: '50vh', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center',mt:2 ,pb:2 }}>
+            <Typography variant="h5" gutterBottom sx={{ width: { xs: "98%", sm: "98%", md: "80%" }, textAlign: 'start' }} color="textSecondary">
                 Temperature Trends for Next Seven Days
             </Typography>
             {chartData.labels.length > 0 ? (

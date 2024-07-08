@@ -3,18 +3,24 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, Typography, CircularProgress, Grid, Divider, Box } from "@mui/material";
 
 import {BounceLoader} from 'react-spinners'
-export const CurrentWeather = () => {
-    const city = "Hyderabad";
+export const CurrentWeather = ({city}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentWeatherData, setCurrentWeatherData] = useState(null);
+   
 
     const fetchCurrentWeather = async (city) => {
+        setLoading(true);
         try {
             const response = await axios.get(`https://api.weatherbit.io/v2.0/current?key=c8cf4fe9861e45b1aad1ca097555ef43&city=${city}`);
-            if (response.data.data && response.data.data[0] && response.data.data[0].city_name.toLowerCase() === city.toLowerCase()) {
-                setCurrentWeatherData(response.data.data[0]);
-                setError(null);
+            if (response.data.data && response.data.data[0]) {
+                const cityNameFromResponse = response.data.data[0].city_name.toLowerCase();
+                if (cityNameFromResponse === city.toLowerCase() || cityNameFromResponse.includes(city.toLowerCase())) {
+                    setCurrentWeatherData(response.data.data[0]);
+                    setError(null);
+                } else {
+                    throw new Error("Invalid city name");
+                }
             } else {
                 throw new Error("Invalid city name");
             }
@@ -28,14 +34,14 @@ export const CurrentWeather = () => {
         }
         setLoading(false);
     };
+    
 
     useEffect(() => {
         fetchCurrentWeather(city);
     }, [city]);
 
-    console.log(currentWeatherData)
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2, }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2, height:'79vh'}}>
             <Grid container justifyContent="center" alignItems="center">
                 {
                     loading ? (
@@ -43,13 +49,15 @@ export const CurrentWeather = () => {
                              <BounceLoader color="#35c5c8"  /> 
                         </Box>
                     ) : error ? (
-                        <Typography color="error">{error}</Typography>
+                        <Box sx={{height:'74vh',width:'100%',display:'flex',justifyContent:"center",alignItems:'center'}}>
+                            <Typography  variant="h6" color="error">{error}</Typography>
+                        </Box>
                     ) : (
                         <Grid item xs={12} sm={8} md={6}>
                             <Card sx={{ minWidth: 275, maxWidth: 600, m: 2, p: 2 }}>
                                 <CardContent>
                                     <Typography variant="h5" gutterBottom>
-                                        {city}
+                                        {currentWeatherData.city_name}
                                     </Typography>
 
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
